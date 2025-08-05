@@ -1,0 +1,154 @@
+/* Tag Component Styles - Premium modern design */
+
+/* Base tag styles - High specificity */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45em 0.9em;
+  border-radius: 24px;
+  font-size: 0.75em;
+  font-weight: 600;
+  line-height: 1.2;
+  border: 1.5px solid;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
+  user-select: none;
+  letter-spacing: 0.01em;
+  backdrop-filter: blur(8px);
+}
+
+.tag:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.tag:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Premium color variants */
+.tag-Vegan {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  color: #16a34a;
+  border-color: #bbf7d0;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.08);
+}
+
+.tag-Vegetarisch {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: #2563eb;
+  border-color: #bfdbfe;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+}
+
+.tag-Fleisch {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  color: #dc2626;
+  border-color: #fecaca;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08);
+}
+
+.tag-Alkohol {
+  background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+  color: #ca8a04;
+  border-color: #fef3c7;
+  box-shadow: 0 2px 8px rgba(202, 138, 4, 0.08);
+}
+
+.tag-Glutenfrei {
+  background: linear-gradient(135deg, #faf5ff 0%, #e9d5ff 100%);
+  color: #7c3aed;
+  border-color: #ddd6fe;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+}
+
+.tag-Laktosefrei {
+  background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+  color: #9a3412;
+  border-color: #fed7aa;
+  box-shadow: 0 2px 8px rgba(154, 52, 18, 0.08);
+}
+
+.tag-Fructose-Frei {
+  background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+  color: #ec4899;
+  border-color: #fbcfe8;
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.08);
+}
+
+.tag-default {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  color: #374151;
+  border-color: #d1d5db;
+  box-shadow: 0 2px 8px rgba(55, 65, 81, 0.08);
+}
+
+/* Enhanced size variants */
+.tag-sm {
+  padding: 0.35em 0.7em;
+  font-size: 0.625em;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.tag-lg {
+  padding: 0.6em 1.2em;
+  font-size: 0.875em;
+  border-radius: 28px;
+  font-weight: 600;
+}
+
+/* Enhanced interactive states */
+.tag-clickable {
+  cursor: pointer;
+}
+
+.tag-clickable:hover {
+  opacity: 0.9;
+  transform: translateY(-2px) scale(1.03);
+}
+
+.tag-removable {
+  position: relative;
+  padding-right: 1.8em;
+}
+
+.tag-removable::after {
+  content: '×';
+  position: absolute;
+  right: 0.6em;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1em;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.tag-removable:hover::after {
+  opacity: 1;
+  color: #dc2626;
+}
+
+.tag-removable {
+  position: relative;
+  padding-right: 1.5em;
+}
+
+.tag-removable::after {
+  content: '×';
+  position: absolute;
+  right: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2em;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.tag-removable:hover::after {
+  opacity: 1;
+}

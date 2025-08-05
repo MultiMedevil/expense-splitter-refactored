@@ -73,6 +73,17 @@ export const useCalculatorStore = defineStore('calculator', {
       }
     },
 
+    // Returns number of expenses for a user
+    getUserExpensesCount(userName) {
+      const { count } = this.getUserDetailedStats(userName)
+      return count
+    },
+
+    // Returns balance for a user (placeholder same as total amount)
+    getUserBalance(userName) {
+      return this.getUserTotalAmount(userName)
+    },
+
     clearError() {
       this.error = null
     }

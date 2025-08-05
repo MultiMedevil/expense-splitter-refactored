@@ -1,26 +1,40 @@
 <template>
-  <div class="user-card" @click="$emit('click')">
-    <div class="user-avatar">
-      {{ user.name.charAt(0).toUpperCase() }}
-    </div>
-    
-    <div class="user-info">
-      <h3 class="user-name">{{ user.name }}</h3>
-      <div class="user-tags">
-        <span 
-          v-for="tag in user.tags" 
-          :key="tag" 
-          class="user-tag"
-          :style="getTagStyle(tag)"
-        >
-          {{ tag }}
-        </span>
+  <div class="user-card" @click="handleUserClick" :class="{ 'user-card--clickable': !readonly }">
+    <div class="user-card-header">
+      <div class="user-avatar" :style="{ backgroundColor: getAvatarColor(user.name) }">
+        {{ user.name.charAt(0).toUpperCase() }}
+      </div>
+      <div class="user-info">
+        <h3 class="user-name">{{ user.name }}</h3>
+        <div class="user-email" v-if="user.email">{{ user.email }}</div>
       </div>
     </div>
-
+    
     <div class="user-stats">
-      <span class="stat-amount">{{ totalExpenses }}€</span>
-      <span class="stat-label">Gesamt</span>
+      <div class="stat-item">
+        <span class="stat-value">{{ formatCurrency(totalExpenses) }}</span>
+        <span class="stat-label">Gesamt</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ userExpensesCount }}</span>
+        <span class="stat-label">Ausgaben</span>
+      </div>
+      <div class="stat-item" v-if="userBalance !== 0">
+        <span class="stat-value" :class="{ 'positive': userBalance > 0, 'negative': userBalance < 0 }">
+          {{ formatCurrency(userBalance) }}
+        </span>
+        <span class="stat-label">Saldo</span>
+      </div>
+    </div>
+    
+    <div class="user-tags" v-if="user.tags?.length">
+      <span v-for="tag in user.tags" :key="tag" class="tag" :class="getTagClass(tag)">
+        {{ tag }}
+      </span>
+    </div>
+    
+    <div class="user-actions" v-if="!readonly">
+      <button @click.stop="handleDelete" class="btn-delete" title="Löschen">🗑️</button>
     </div>
   </div>
 </template>
@@ -35,34 +49,61 @@ export default {
     user: {
       type: Object,
       required: true
+    },
+    readonly: {
+      type: Boolean,
+      default: false
     }
   },
-  emits: ['click'],
-  setup(props) {
+  emits: ['click', 'delete'],
+  setup(props, { emit }) {
     const calculatorStore = useCalculatorStore()
     
     const totalExpenses = computed(() => {
       return calculatorStore.getUserTotalAmount(props.user.name) || 0
     })
 
-    const getTagStyle = (tag) => {
-      const colors = {
-        'Vegan': { background: '#d4edda', color: '#155724' },
-        'Vegetarisch': { background: '#d1ecf1', color: '#0c5460' },
-        'Fleisch': { background: '#f8d7da', color: '#721c24' },
-        'Alkohol': { background: '#fff3cd', color: '#856404' },
-        'Glutenfrei': { background: '#d1ecf1', color: '#0c5460' },
-        'Laktosefrei': { background: '#fff3cd', color: '#856404' },
-        'Fructose-Frei': { background: '#d4edda', color: '#155724' },
-        'default': { background: '#e2e3e5', color: '#383d41' }
-      }
-      
-      return colors[tag] || colors.default
+    const userExpensesCount = computed(() => {
+      return calculatorStore.getUserExpensesCount(props.user.name) || 0
+    })
+
+    const userBalance = computed(() => {
+      return calculatorStore.getUserBalance(props.user.name) || 0
+    })
+
+    const getAvatarColor = (name) => {
+      const colors = ['#3498db', '#f1c40f', '#2ecc71', '#e74c3c', '#9b59b6']
+      return colors[name.charCodeAt(0) % colors.length]
     }
 
+    const getTagClass = (tag) => {
+      return `tag-${tag}`
+    }
+
+    const formatCurrency = (value) => {
+      return `${value}€`
+    }
+
+    const handleUserClick = () => {
+      if (!props.readonly) {
+        emit('click', props.user)
+      }
+    }
+
+    const handleDelete = () => {
+      emit('delete', props.user)
+    }
+
+    // Expose to template
     return {
       totalExpenses,
-      getTagStyle
+      userExpensesCount,
+      userBalance,
+      getAvatarColor,
+      getTagClass,
+      formatCurrency,
+      handleUserClick,
+      handleDelete
     }
   }
 }
@@ -70,71 +111,149 @@ export default {
 
 <style scoped>
 .user-card {
-  background: white;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-lg);
-  padding: 1.5rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 1.5em;
+  transition: all 0.2s ease-in-out;
   cursor: pointer;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  border: 1px solid #e0e0e0;
 }
 
-.user-card:hover {
-  box-shadow: var(--shadow);
+.user-card--clickable:hover {
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.user-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1em;
 }
 
 .user-avatar {
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: var(--primary-color);
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
   font-weight: bold;
+  color: #fff;
+  font-size: 1.25em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.user-info {
-  flex: 1;
-}
-
-.user-name {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.25rem;
+.user-info h3 {
+  margin: 0;
+  font-size: 1.125em;
+  color: #34495e;
   font-weight: 600;
+}
+
+.user-email {
+  color: #666;
+  font-size: 0.875em;
+  margin-top: 0.25em;
 }
 
 .user-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem;
+  gap: 0.5em;
+  margin-bottom: 1em;
 }
 
-.user-tag {
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--border-radius-sm);
-  font-size: 0.75rem;
-  font-weight: 500;
+.user-stat-label {
+  font-size: 0.75em;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .user-stats {
-  text-align: right;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
 }
 
-.stat-amount {
-  display: block;
-  font-size: 1.25rem;
+.user-stat {
+  text-align: center;
+}
+
+.user-stat-value {
   font-weight: 600;
-  color: var(--primary-color);
+  color: #34495e;
+  font-size: 1.1em;
 }
 
-.stat-label {
-  font-size: 0.875rem;
-  color: var(--text-muted);
+
+.user-actions {
+  display: flex;
+  gap: 0.5em;
+  margin-top: 1em;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  font-size: 0.875em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid transparent;
+  color: #34495e;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.action-btn.tag-green {
+  background-color: #f0fdf4;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+
+.tag-orange {
+  background-color: #fff7ed;
+  color: #9a3412;
+  border-color: #fed7aa;
+}
+
+.tag-red {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border-color: #fca5a5;
+}
+
+.action-btn--edit {
+  background-color: #eef2ff;
+  border-color: #e0e7ff;
+  color: #34495e;
+}
+
+.action-btn--edit:hover {
+  background-color: #e0e7ff;
+}
+
+.action-btn--delete {
+  background-color: #fff1f2;
+  border-color: #ffe4e6;
+  color: #34495e;
+}
+
+.action-btn--delete:hover {
+  background-color: #ffe4e6;
+}
+
+.action-btn__icon {
+  font-size: 0.875em;
 }
 </style>

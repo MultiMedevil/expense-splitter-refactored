@@ -18,10 +18,13 @@ export default {
 }
 </script>
 
-<style scoped>
-.app {
+<style>
+#app {
   display: flex;
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+
+/* Import layout styles */
+@import '@/styles/layout.css';
 </style>

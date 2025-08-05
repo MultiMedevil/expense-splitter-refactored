@@ -32,13 +32,15 @@ export default {
 <style scoped>
 .main-content {
   flex: 1;
-  padding: 2rem;
-  background-color: var(--background-color);
+  margin-left: 280px;
+  min-height: 100vh;
+  background: var(--background-color);
   overflow-y: auto;
 }
 
 @media (max-width: 768px) {
   .main-content {
+    margin-left: 0;
     padding: 1rem;
   }
 }
